@@ -5,48 +5,40 @@ document.addEventListener("DOMContentLoaded", () => {
         el: ".vue-form",
         data: {
             fields: {
-                email: {
-                    name: 'Email',
-                    value: ''
-                },
-                fName: {
-                    name: 'First name',
-                    value: ''
-                },
-                lName: {
-                    name: 'Last name',
-                    value: ''
+                name: {
+                    name: 'Name',
+                    type: 'text',
+                    value: '',
+                    pattern: ''
                 },
                 phone: {
                     name: 'Phone',
-                    value: ''
+                    type: 'phone',
+                    value: '',
+                    pattern: ''
                 },
-                guests: {
-                    name: 'Guests',
-                    value: []
-                }
-            },
-            complete: false
+                email: {
+                    name: 'Email',
+                    type: 'email',
+                    value: '',
+                    pattern: ''
+                },
+                some_field: {
+                    name: 'Some field',
+                    type: 'text',
+                    value: '',
+                    pattern: ''
+                },
+                other_field: {
+                    name: 'Other field',
+                    type: 'text',
+                    value: '',
+                    pattern: ''
+                },
+            }
         },
         methods: {
-            addGuest(e){
-                e.preventDefault();
-
-                this.fields.guests.value.push('');
-            },
-            removeGuest(e, key){
-                this.fields.guests.value.splice(key, 1);
-            },
-            processForm(e){
-                e.preventDefault();
-
-                this.complete = !this.complete;
-            },
-            sendForm(e){
-                e.preventDefault();
-
-                console.log(this.fields);
-            }
+            
         }
     });
 });
