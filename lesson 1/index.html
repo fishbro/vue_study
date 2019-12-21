@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="vue-form">
+            <form action="" v-if="!complete">
+                <h1>My form</h1>
+                <div class="form-group" v-for="(field, key) in fields">
+                    <label v-bind:for="key">{{field.name}}</label>
+                    <template v-if="key !== 'guests'">
+                        <input v-bind:type="key" 
+                               class="form-control" 
+                               v-bind:name="key" 
+                               v-bind:id="key" 
+                               v-model="field.value"
+                        >
+                    </template>
+                    <template v-else>
+                        <button class="btn btn-primary" v-on:click="addGuest">+</button>
+                        <br>
+                        <br>
+                        <div class="form-group" v-for="(guest, gkey) in field.value">
+                            <label v-bind:for="'guest_'+gkey" v-on:dblclick="removeGuest($event, gkey)">
+                                Guest {{ gkey+1 }}
+                            </label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   v-bind:name="'guest_'+gkey" 
+                                   v-bind:id="'guest_'+gkey" 
+                                   v-model="fields[key].value[gkey]"
+                            >
+                        </div>
+                    </template>
+                </div>
+                <hr>
+                <button type="submit" class="btn btn-success" v-on:click="processForm">Confirm</button>
+            </form>
+            <div class="result" v-else>
+                <h1>Table ready!</h1>
+                <table class="table table-bordered">
+                    <tr v-for="(field, key) in fields">
+                        <td>{{field.name}}</td>
+                        <td>
+                            <template v-if="key !== 'guests'">
+                                {{field.value}}
+                            </template>
+                            <template v-else>
+                                <ul v-if="field.value.length > 0">
+                                    <li v-for="guest in field.value">
+                                        {{guest}}
+                                    </li>
+                                </ul>
+                            </template>
+                        </td>
+                    </tr>
+                </table>
+                <button class="btn btn-success" v-on:click="sendForm">Send data!</button>
+                <button class="btn btn-danger" v-on:click="processForm">Back</button>
+            </div>
+        </div>
+    </div>
+    <script src="./js/vue.js"></script>
+    <script src="./js/script.js"></script>
+</body>
+</html>
