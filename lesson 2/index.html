@@ -4,29 +4,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Vue Lesson 2 (Styles)</title>
     <link rel="stylesheet" href="./css/bootstrap.min.css">
     <link rel="stylesheet" href="./css/fontawesome.min.css">
     <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
     <div class="container">
-        <br>
         <div class="vue-form">
-            <div class="form">
+            <br>
+            <template v-if="!form_submited">
+                <p><strong>Form progress</strong></p>
                 <div class="progress">
-                    <div class="progress-bar" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                    <div class="progress-bar" role="progressbar" :style="checkProgress" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
-                <div class="form-group" v-for="(field, key) in fields">
-                    <label :for="key">{{ field.name }}</label>
-                    <input :type="field.type" 
-                           class="form-control" 
-                           :name="key" 
-                           :id="key" 
-                           :v-model="fields[key].value">
-                </div>
-                <input class="btn btn-default" type="button">
-            </div>
+                <br>
+                <form class="form" @submit.prevent="submitForm">
+                    <div class="form-group" v-for="(field, key) in fields">
+                        <label :for="key">
+                            {{ field.name }} 
+                            <i :class="{fas: true, 'fa-times-circle': !field.valid, 'fa-check-circle': field.valid}"></i>
+                        </label>
+                        <input :type="field.type" 
+                               class="form-control" 
+                               :name="key" 
+                               :id="key" 
+                               :required="field.required"
+                               v-model="fields[key].value"
+                               @input="checkField($event, key)"
+                               >
+                    </div>
+                    <input class="btn btn-success" type="submit" value="Submit" :disabled="!form_valid">
+                </form>
+            </template>
+            <template v-else="form_submited">
+                <table class="table table-bordered">
+                    <tr v-for="(field, key) in fields">
+                        <td>{{ field.name }}</td>
+                        <td>{{ field.value }}</td>
+                    </tr>
+                </table>
+                <input class="btn btn-warning" type="button" value="Back" @click="submitForm">
+            </template>
         </div>
     </div>
     <script src="./js/vue.js"></script>

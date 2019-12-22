@@ -1,0 +1,6 @@
+form label i.fas{
+    display: none;
+}
+form .validity label i.fas{
+    display: inline-block;
+}
