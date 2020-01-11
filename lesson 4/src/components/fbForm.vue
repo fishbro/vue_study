@@ -1,18 +1,21 @@
 <template>
     <div>
-        <fb-progress></fb-progress>
-        <form action="">
-            <fb-input   v-for="(field, key) in fields" 
-                        :key="key"
-                        :id="key"
-                        :name="field.name"
-                        :value="field.value"
-                        :pattern="field.pattern"
-                        @input="onInput($event)"
-            >
-            </fb-input>
-        </form>
-        <fb-result :fields="fields"></fb-result>
+        <div v-if="!submited">
+            <fb-progress :value="progress" :max="getLength"></fb-progress>
+            <form action="" class="mt-3" @submit.prevent="formSubmit">
+                <fb-input   v-for="(field, key) in fields" 
+                            :key="key"
+                            :id="key"
+                            :name="field.name"
+                            :value="field.value"
+                            :pattern="field.pattern"
+                            @input="onInput($event)"
+                >
+                </fb-input>
+                <button class="btn btn-primary" type="submit" :disabled="!valid">Send data!</button>
+            </form>
+        </div>
+        <fb-result v-else :fields="fields" @go-back="formSubmit"></fb-result>
     </div>
 </template>
 
@@ -51,22 +54,56 @@ export default {
                     pattern: false
                 },
             },
-            progress: 0,
-            submited: false
+            valid: false,
+            submited: false,
+            progress: 0
         }
     },
     methods:{
         onInput(e){
-            this.fields[e.key].value = e.val;
+            let field = this.fields[e.key];
+
+            field.value = e.value;
+            field.valid = e.valid;
+
+            this.validateForm();
+        },
+        validateForm(){
+            let progress = 0;
+            let fieldsValid = 0;
+            for (const key in this.fields) {
+                const element = this.fields[key];
+                    
+                if(element.valid !== undefined && element.valid === true && element.value !== '') progress++;
+                if(element.pattern && element.valid) fieldsValid++;
+            }
+            this.progress = progress;
+            this.valid = (this.required == fieldsValid);
+        },
+        formSubmit(){
+            this.submited = !this.submited;
         }
     },
     computed:{
-
+        getLength(){
+            return Object.keys(this.fields).length;
+        }
     },
     components: {
         'fb-input': fbInput,
         'fb-progress': fbProgress,
         'fb-result': fbResult,
+    },
+    mounted(){
+        let req = 0;
+        for (const key in this.fields) {
+            const element = this.fields[key];
+                
+            if(element.pattern) req++;
+        }
+        this.required = req;
+        
+        this.validateForm();
     }
 }
 </script>
